@@ -13,11 +13,16 @@ export default function App() {
     setModalIsVisible(false);
   };
   const addCourse = (courseTitle) => {
-    setCourse((rtm) => [
-      ...rtm,
+    setCourse((prevCourse) => [
+      ...prevCourse,
       { text: courseTitle, id: Math.random().toString() },
     ]);
     endModal();
+  };
+  const deleteCourse = (courseId) => {
+    setCourse((prevCourse) =>
+      prevCourse.filter((course) => course.id !== courseId)
+    );
   };
 
   return (
@@ -25,10 +30,13 @@ export default function App() {
       <StatusBar style="light" />
       <View style={styles.container}>
         <Button title="kurs ekle" color="red" onPress={startModal} />
+
         <CourselInput
           visible={modalIsVisible}
           onAddCourse={addCourse}
           onCancel={endModal}
+          onDeleteCourse={deleteCourse}
+          courses={course}
         />
         <FlatList
           data={course}

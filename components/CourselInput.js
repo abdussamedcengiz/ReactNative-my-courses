@@ -1,22 +1,46 @@
+import React, { useState } from "react";
 import {
   StyleSheet,
-  Text,
   View,
   Modal,
   Image,
   TextInput,
   Button,
 } from "react-native";
-import React, { useState } from "react";
 
-export default function CourselInput({ visible, onAddCourse, onCancel }) {
+export default function CourselInput({
+  visible,
+  onAddCourse,
+  onCancel,
+  onDeleteCourse,
+  courses,
+}) {
   const [enteredCourseText, setEnteredCourseText] = useState("");
 
   const addCourseHandler = () => {
+    if (enteredCourseText.trim() === "") {
+      // Boşsa ekleme işlemi yapmıyoruz
+      return;
+    }
     onAddCourse(enteredCourseText);
     setEnteredCourseText("");
   };
-  //const samet=(text)=>{setEnteredCourseText(text)}
+
+  const deleteCourseHandler = () => {
+    if (enteredCourseText.trim() === "") {
+      // Boşsa silme işlemi yapmıyoruz
+      return;
+    }
+    // Silinecek kursun metnini alıyoruz
+    const courseToDelete = enteredCourseText;
+    // Kursun id'sini almak için tüm kursları tarayalım
+    const courseId = courses.find(
+      (course) => course.text === courseToDelete
+    ).id;
+    // onDeleteCourse fonksiyonuna kursun id'sini gönderelim
+    onDeleteCourse(courseId);
+    setEnteredCourseText(""); // Girdiyi temizle
+  };
   return (
     <Modal animationType="slide" visible={visible}>
       <View style={styles.inputContainer}>
@@ -36,6 +60,9 @@ export default function CourselInput({ visible, onAddCourse, onCancel }) {
           </View>
           <View style={styles.button}>
             <Button title="ekle" color="blue" onPress={addCourseHandler} />
+          </View>
+          <View style={styles.button}>
+            <Button title="sil" color="green" onPress={deleteCourseHandler} />
           </View>
         </View>
       </View>
